@@ -30,29 +30,13 @@
                         <form method="post" action="{{ route('peminjaman.store') }}">
                             @csrf
                             <div class="mb-3">
-                                <label for="nama_peminjam" class="form-label">Nama Peminjam</label>
-                                <input type="text" class="form-control" id="nama_peminjam" name="nama_peminjam">
-                            </div>
-                            <div class="mb-3">
-                                <label for="tanggal_pinjam" class="form-label">Tanggal Pinjam</label>
-                                <input type="date" class="form-control" id="tanggal_pinjam" name="tanggal_pinjam">
-                            </div>
-                            <div class="mb-3">
-                                <label for="tanggal_kembali" class="form-label">Tanggal Kembali</label>
-                                <input type="date" class="form-control" id="tanggal_kembali" name="tanggal_kembali">
-                            </div>
-                            <div class="mb-3">
-                                <label for="barang_id" class="form-label">Barang</label>
-                                <select class="form-select" id="barang_id" name="barang_id" disabled>
-                                    <option default value="">Scan Qr barang</option>
-                                    @foreach ($inventaris as $barang)
-                                        <option value="{{ $barang->id }}">{{ $barang->name }}</option>
+                                <label for="name" class="form-label">Peminjam</label>
+                                <select name="peminjam_id" id="peminjam_id" class="form-select">
+                                    <option selected>Pilih...</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" name="id_barang" id="id_barang">
-                                        
-                                <div id="scannerBarang" class="reader"></div>
-                            </div>
                             <button type="submit" class="btn btn-primary {{ $inventaris->count() == 0 ? 'disabled' : '' }}">Tambah</button>
                         </form>
                     </div>

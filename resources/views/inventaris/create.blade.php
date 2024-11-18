@@ -23,39 +23,44 @@
                 <!-- Multi Columns Form -->
                 <form class="row g-3" method="post" action="{{ route('inventaris.store') }}" enctype="multipart/form-data">
                     @csrf
+
                     <div class="col-md-6">
-                        <label for="nama" class="form-label">Nama Barang</label>
-                        <input type="text" class="form-control" id="nama" name="nama" value="{{ old('nama') }}">
+                        <label for="nama_barang" class="form-label">Nama Barang</label>
+                        <input type="text" class="form-control" id="nama_barang" name="nama_barang">
                     </div>
                     <div class="col-md-6">
-                        <label for="kategori_id" class="form-label" value="{{ old('kategori_id') }}">Kategori</label>
-                        <select id="kategori_id" class="form-select" name="kategori_id">
-                            <option selected>Pilih Kategori</option>
+                        <label for="foto_barang" class="form-label">Foto Barang</label>
+                        <input type="file" class="form-control" id="foto_barang" name="foto_barang">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="tgl_pembelian" class="form-label">Tanggal Pembelian</label>
+                        <input type="date" class="form-control" id="tgl_pembelian" name="tgl_pembelian">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="harga_barang" class="form-label">Harga Barang</label>
+                        <input type="number" class="form-control" id="harga_barang" name="harga_barang">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="id_kategori" class="form-label">Kategori</label>
+                        <select id="id_kategori" class="form-select" name="id_kategori">
+                            <option selected>Pilih...</option>
                             @foreach ($kategori as $item)
-                                <option value="{{ $item->id }}">{{ $item->nama_kategori }}</option>
+                                <option value="{{ $item->id_kategori }}">{{ $item->nama_kategori }}</option>
                             @endforeach
                         </select>
                     </div>
+
                     <div class="col-md-6">
-                        <label for="jumlah" class="form-label">Jumlah</label>
-                        <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ old('jumlah') }}">
+                        <label for="jumlah_barang" class="form-label">Jumlah Barang</label>
+                        <input type="number" class="form-control" id="jumlah_barang" name="jumlah_barang">
                     </div>
-                    <div class="col-md-6">
-                        <label for="kondisi" class="form-label">Kondisi</label>
-                        <select id="kondisi" class="form-select" name="kondisi">
-                            <option selected>Pilih Kondisi</option>
-                            <option value="Baik">Baik</option>
-                            <option value="Rusak">Rusak</option>
-                        </select>
+
+                    <div class="col-md-12">
+                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                        <textarea class="form-control" id="deskripsi" name="deskripsi_barang" rows="3"></textarea>
                     </div>
-                    <div class="col-md-6">
-                        <label for="keterangan" class="form-label">Keterangan</label>
-                        <input type="text" class="form-control" id="keterangan" name="keterangan" value="{{ old('keterangan') }}">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="gambar" class="form-label">Gambar</label>
-                        <input type="file" class="form-control" id="gambar" name="gambar">
-                    </div>
+                        
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary" onclick="confirmModal()" >Tambah</button>
                     </div>

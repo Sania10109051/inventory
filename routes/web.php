@@ -6,7 +6,6 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\LogoutController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -30,7 +29,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
 })->middleware(['auth', 'verified']);
 
 Route::prefix('inventaris')->name('inventaris.')->middleware(['auth', 'verified'])->group(function () {
-    Route::get('/', [InventarisController::class, 'index'])->name('list');
+    Route::get('/', [InventarisController::class, 'index'])->name('index');
+    Route::get('/list/{id}', [InventarisController::class, 'barangByKategori'])->name('list');
     Route::get('/show/{id}', [InventarisController::class, 'show'])->name('show');
     Route::get('/add', [InventarisController::class, 'create'])->name('create');
     Route::post('/store', [InventarisController::class, 'store'])->name('store');
@@ -53,7 +53,9 @@ Route::prefix('peminjaman')->name('peminjaman.')->middleware(['auth', 'verified'
     Route::post('/scanReturn', [PeminjamanController::class, 'scanReturn'])->name('scanReturn');
 });
 
-
+Route::prefix('monitoring')->name('monitoring.')->middleware(['auth', 'verified'])->group(function () {
+     Route::get('/', [InventarisController::class, 'monitoring'])->name('index'); 
+});
 
 Route::prefix('kategori')->name('kategori.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [KategoriController::class, 'index'])->name('index');

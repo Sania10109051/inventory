@@ -2,6 +2,7 @@
     <x-slot name="title">
         Barang Inventaris
     </x-slot>
+    
 
     <x-pagetittle>
         Barang Inventaris
@@ -22,39 +23,53 @@
                     <div class="card-body">
                         <x-alert></x-alert>
                         <!-- Default Table -->
-                        <div class="table-responsive">
-                            <table class="table text-center">
+                        <div class="table-responsive p-3">
+                            <table class="table table-data text-center table-hover">
                                 <thead>
                                     <tr>
                                         <th scope="col">Kode Barang</th>
                                         <th scope="col">Nama Barang</th>
-                                        <th scope="col">Jumlah Barang</th>
-                                        <th scope="col">Status Barang</th>
+                                        <th scope="col">Harga Barang</th>
+                                        <th scope="col">Kategori Barang</th>
+                                        <th scope="col">Tanggal Pembelian Barang</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($inventaris as $item)
                                     <tr>
-                                        <th scope="row">{{ $item->id }}</th>
+                                        <th scope="row">{{ $item->id_barang }}</th>
                                         <td>{{ $item->nama_barang }}</td>
-                                        <td>{{ $item->jumlah }}</td>
-                                        <td>{{ $item->status_barang }}</td>
                                         <td>
-                                            <a href="{{ route('inventaris.show', $item->id) }}">
+                                            @if ($item->harga_barang == null)
+                                            <span class="badge bg-danger">Belum diisi</span>
+                                            @else
+                                            Rp. {{ number_format($item->harga_barang, 0, ',', '.') }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @foreach ($kategori as $ktg)
+                                            @if ($ktg->id_kategori == $item->id_kategori)
+                                            {{ $ktg->nama_kategori }}
+                                            @endif
+                                            @endforeach
+                                        </td>
+                                        <td>{{ $item->tgl_pembelian }}</td>
+                                        <td>
+                                            <a href="{{ route('inventaris.show', $item->id_barang) }}">
                                                 <button type="button" class="btn btn-info btn-sm" title="Detail">
                                                     <i class="ri-eye-fill"></i>
                                                 </button>
                                             </a>
-                                            <a href="{{ route('inventaris.edit', $item->id) }}">
+                                            <a href="{{ route('inventaris.edit', $item->id_barang) }}">
                                                 <button type="button" class="btn btn-warning btn-sm" title="Edit">
                                                     <i class="ri-pencil-line"></i>
                                                 </button>
                                             </a>
-                                            <form id="delete-form-{{ $item->id }}" action="{{ route('inventaris.delete', $item->id) }}" method="POST" style="display:inline;">
+                                            <form id="delete-form-{{ $item->id_barang }}" action="{{ route('inventaris.delete', $item->id_barang) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-danger btn-sm" title="Hapus" onclick="confirmDelete('{{ $item->id }}')">
+                                                <button type="button" class="btn btn-danger btn-sm" title="Hapus" onclick="confirmDelete('{{ $item->id_barang }}')">
                                                     <i class="ri-delete-bin-5-line"></i>
                                                 </button>
                                             </form>
@@ -90,4 +105,5 @@
             })
         }
     </script>
+    
 </x-layout>

@@ -26,51 +26,58 @@
                     <div class="card-body">
                         <x-alert></x-alert>
                         <!-- Multi Columns Form -->
-                        <form class="row g-3 pt-4" method="post" action="{{ route('inventaris.update', $inventaris->id) }}" enctype="multipart/form-data">
+                        <form class="row g-3 pt-4" method="post" action="{{ route('inventaris.update', $inventaris->id_barang) }}" enctype="multipart/form-data">
                             @csrf
+                            
                             <div class="col-md-6">
-                                <label for="inputEmail5" class="form-label">Nama Barang</label>
-                                <input type="text" name="nama" class="form-control" id="inputEmail5" value="{{ $inventaris->name }}">
+                                <label for="nama_barang" class="form-label">Nama Barang</label>
+                                <input type="text" class="form-control" id="nama_barang" name="nama_barang" value="{{ $inventaris->nama_barang }}">
                             </div>
                             <div class="col-md-6">
-                                <label for="inputState" class="form-label">Kategori Barang</label>
-                                <select name="kategori" id="inputState" class="form-select">
-                                    <option value="0" {{ $inventaris->kategori == 0 ? 'selected' : '' }}>Alat Tulis Kantor</option>
-                                    <option value="1" {{ $inventaris->kategori == 1 ? 'selected' : '' }}>Alat Elektronik</option>
-                                    <option value="2" {{ $inventaris->kategori == 2 ? 'selected' : '' }}>Alat Kebersihan</option>
-                                    <option value="3" {{ $inventaris->kategori == 3 ? 'selected' : '' }}>Alat Keamanan</option>
-
-
+                                <label for="foto_barang" class="form-label">Foto Barang</label>
+                                <input type="file" class="form-control" id="foto_barang" name="foto_barang" value="{{ $inventaris->foto_barang }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="tgl_pembelian" class="form-label">Tanggal Pembelian</label>
+                                <input type="date" class="form-control" id="tgl_pembelian" name="tgl_pembelian" value="{{ $inventaris->tgl_pembelian }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="harga_barang" class="form-label">Harga Barang</label>
+                                <input type="number" class="form-control" id="harga_barang" name="harga_barang" value="{{ $inventaris->harga_barang }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_kategori" class="form-label">Kategori</label>
+                                <select id="id_kategori" class="form-select" name="id_kategori">
+                                    <option selected>Pilih...</option>
+                                    @foreach ($kategori as $item)
+                                        <option value="{{ $item->id_kategori }}" {{ $item->id_kategori == $inventaris->id_kategori ? 'selected' : '' }}>{{ $item->nama_kategori }}</option>
+                                    @endforeach
                                 </select>
                             </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <textarea class="form-control" placeholder="Deskripsi" name="deskripsi" id="floatingTextarea" style="height: 100px;">{{ $inventaris->description }}</textarea>
-                                    <label for="floatingTextarea">Deskripsi Barang</label>
-                                </div>
+                            <div class="col-md-6">
+                                <label for="status_barang" class="form-label">Status Barang</label>
+                                <select id="status_barang" class="form-select" name="status_barang">
+                                    <option selected>Pilih...</option>
+                                    <option value="Tersedia" {{ $inventaris->status_barang == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
+                                    <option value="Dipinjam" {{ $inventaris->status_barang == 'Dipinjam' ? 'selected' : '' }}>Dipinjam</option>
+                                    <option value="Rusak" {{ $inventaris->status_barang == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="kondisi" class="form-label">Kondisi</label>
+                                <select id="kondisi" class="form-select" name="kondisi">
+                                    <option selected>Pilih...</option>
+                                    <option value="Baik" {{ $inventaris->kondisi == 'Baik' ? 'selected' : '' }}>Baik</option>
+                                    <option value="Rusak" {{ $inventaris->kondisi == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                                    <option value="Dalam Perbaikan" {{ $inventaris->kondisi == 'Dalam Perbaikan' ? 'selected' : '' }}>Dalam Perbaikan</option>
+                                    <option value="Hilang" {{ $inventaris->kondisi == 'Hilang' ? 'selected' : '' }}>Hilang</option>
+                                    
+                                </select>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <img src="{{ Storage::url('inventaris/' . $inventaris->gambar)}}" alt="Gambar" style="width: 200px;">
-                                </div>
-
-                                <div class="col-6">
-                                    <label for="formFile" class="form-label">Gambar Barang</label>
-                                    <input class="form-control" type="file" id="formFile" name="gambar">
-                                </div>
-                                <div class="col-6">
-                                    <label for="inputEmail5" class="form-label">Ketersediaan</label>
-                                    <select name="ketersediaan" id="inputState" class="form-select">
-                                        @if ($inventaris->status == 1)
-                                        <option value="1" selected>Tersedia</option>
-                                        <option value="0">Tidak Tersedia</option>
-                                        @else
-                                        <option value="1">Tersedia</option>
-                                        <option value="0" selected>Tidak Tersedia</option>
-                                        @endif
-                                    </select>
-                                </div>
+                            <div class="col-md-6">
+                                <label for="deskripsi_barang" class="form-label">Deskripsi</label>
+                                <textarea class="form-control" id="deskripsi_barang" name="deskripsi_barang" rows="3">{{ $inventaris->deskripsi_barang }}</textarea>
                             </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary">Edit</button>

@@ -16,11 +16,11 @@
                         <b>Edit Kategori</b>
                     </div>
                     <div class="card-body mt-2">
-                        <form method="post" action="{{ route('kategori.update', $kategori->id) }}">
+                        <form method="post" action="{{ route('kategori.update', $kategori->id_kategori) }}">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nama Kategori</label>
-                                <input type="text" class="form-control" id="name" name="name" value="{{ $kategori->name }}">
+                                <input type="text" class="form-control" id="name" name="nama_kategori" value="{{ $kategori->nama_kategori }}">
                             </div>
                             <button type="submit" onclick="confirmModal()" class="btn btn-primary">Edit</button>
                         </form>
