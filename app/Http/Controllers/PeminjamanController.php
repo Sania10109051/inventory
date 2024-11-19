@@ -81,7 +81,12 @@ class PeminjamanController extends Controller
                 'id_peminjaman' => $peminjaman->id_peminjaman,
                 'id_barang' => $id_barang,
             ]);
+            Inventaris::where('id_barang', $id_barang)->update([
+                'status_barang' => 'Dipinjam'
+            ]);
         }
+
+
 
         return redirect()->route('peminjaman.index')
             ->with('success', 'Data peminjaman berhasil ditambahkan.');
@@ -270,21 +275,35 @@ class PeminjamanController extends Controller
         }
 
         $status = $request->status;
-        $kondisi = $request->kondisi;
         if ($status == 'Dikembalikan') {
             $peminjaman->status = $status;
             $peminjaman->tgl_kembali = date('Y-m-d');
             $peminjaman->save();
 
-            $barang = Inventaris::where('id_barang', $peminjaman->id_barang)->first();
-            $barang->status_barang = 'Tersedia';
-            $barang->kondisi = $kondisi;
+            $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get();
+            $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
 
-            if (!$barang->save()) {
-                return redirect()->back()
-                    ->with('error', 'Data peminjaman gagal diubah.');
+            $kondisi_barang = $request->kondisi;
+
+            // multiple kondisi barang from request
+            foreach ($barang as $brg) {
+                if (isset($kondisi_barang[$brg->id_barang])) {
+                    $brg->kondisi = $kondisi_barang[$brg->id_barang];
+                    if ($brg->kondisi == 'Rusak' || $brg->kondisi == 'Hilang') {
+                        $brg->status_barang = 'Tidak Tersedia';
+                    } else {
+                        $brg->status_barang = 'Tersedia';
+                    }
+                    $brg->save();
+                }
             }
 
+            foreach ($barang as $brg) {
+                if (!$brg->save()) {
+                    return redirect()->back()
+                        ->with('error', 'Data peminjaman gagal diubah.');
+                }
+            }
             return redirect()->route('peminjaman.index')
                 ->with('success', 'Data peminjaman berhasil diubah.');
         } else {

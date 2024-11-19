@@ -184,8 +184,11 @@ class InventarisController extends Controller
         $kondisiBarang = $request->kondisi;
         $statusBarang = $request->status_barang;
 
-        if ($kondisiBarang == 'Rusak') {
-            $statusBarang = 'Tidak Tersedia';
+        if ($kondisiBarang == 'Rusak' || $kondisiBarang == 'Hilang') {
+            if ($statusBarang == 'Dalam Perbaikan')
+                $statusBarang = 'Dalam Perbaikan';
+            else
+                $statusBarang = 'Tidak Tersedia';
         }
 
         $data = [

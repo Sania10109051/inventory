@@ -2,16 +2,17 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\KelolaUsersController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\UsersController;
 
 Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
+Route::get('dashboard', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -21,14 +22,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-    Route::get('/kelola_user', [AdminController::class, 'kelola_user'])->name('kelola_user');
-    Route::get('/kelola_user/add', [AdminController::class, 'create'])->name('user.create');
-    Route::post('/kelola_user/store', [AdminController::class, 'store'])->name('user.store');
-})->middleware(['auth', 'verified']);
+Route::prefix('kelola_user')->name('kelola_user.')->middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('/', [KelolaUsersController::class, 'index'])->name('index');
+    Route::get('/add', [KelolaUsersController::class, 'create'])->name('add');
+    Route::post('/store', [KelolaUsersController::class, 'store'])->name('store');
+    Route::get('/edit/{id}', [KelolaUsersController::class, 'edit'])->name('edit');
+    Route::post('/update/{id}', [KelolaUsersController::class, 'update'])->name('update');
+    Route::delete('/delete/{id}', [KelolaUsersController::class, 'destroy'])->name('delete');
+});
 
-Route::prefix('inventaris')->name('inventaris.')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('inventaris')->name('inventaris.')->middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/', [InventarisController::class, 'index'])->name('index');
     Route::get('/list/{id}', [InventarisController::class, 'barangByKategori'])->name('list');
     Route::get('/show/{id}', [InventarisController::class, 'show'])->name('show');
@@ -38,9 +41,9 @@ Route::prefix('inventaris')->name('inventaris.')->middleware(['auth', 'verified'
     Route::post('/update/{id}', [InventarisController::class, 'update'])->name('update');
     Route::delete('/delete/{id}', [InventarisController::class, 'destroy'])->name('delete');
     Route::get('/qr/{id}', [InventarisController::class, 'qrCreate'])->name('qr');
-})->middleware(['auth', 'verified']);
+})->middleware(['auth', 'verified', 'admin']);
 
-Route::prefix('peminjaman')->name('peminjaman.')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('peminjaman')->name('peminjaman.')->middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/', [PeminjamanController::class, 'index'])->name('index');
     Route::get('/show/{id}', [PeminjamanController::class, 'show'])->name('show');
     Route::get('/add', [PeminjamanController::class, 'create'])->name('add');
@@ -53,17 +56,31 @@ Route::prefix('peminjaman')->name('peminjaman.')->middleware(['auth', 'verified'
     Route::post('/scanReturn', [PeminjamanController::class, 'scanReturn'])->name('scanReturn');
 });
 
-Route::prefix('monitoring')->name('monitoring.')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('monitoring')->name('monitoring.')->middleware(['auth', 'verified', 'admin'])->group(function () {
      Route::get('/', [InventarisController::class, 'monitoring'])->name('index'); 
 });
 
-Route::prefix('kategori')->name('kategori.')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('kategori')->name('kategori.')->middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/', [KategoriController::class, 'index'])->name('index');
     Route::get('/add', [KategoriController::class, 'create'])->name('add');
     Route::post('/store', [KategoriController::class, 'store'])->name('store');
     Route::get('/edit/{id}', [KategoriController::class, 'edit'])->name('edit');
     Route::post('/update/{id}', [KategoriController::class, 'update'])->name('update');
     Route::delete('/delete/{id}', [KategoriController::class, 'destroy'])->name('delete');
+});
+
+Route::prefix('user')->name('user.')->middleware(['auth', 'verified',])->group(function () {
+    Route::get('/profile', [UsersController::class, 'show'])->name('profile');
+    Route::get('/profile/edit', [UsersController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [UsersController::class, 'updateProfile'])->name('profile.update');
+    Route::delete('/profile/delete', [UsersController::class, 'destroy'])->name('profile.destroy');
+    Route::post(('profile/change-password'), [UsersController::class, 'changePassword'])->name('profile.change-password');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/unauthorized', function () {
+        return view('errors.unauthorized');
+    })->name('unauthorized');
 });
 
 require __DIR__.'/auth.php';

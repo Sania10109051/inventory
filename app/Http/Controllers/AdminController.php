@@ -14,7 +14,9 @@ class AdminController extends Controller
 
     public function kelola_user()
     {
-        return view('admin.kelola_user');
+        $users = User::all();
+
+        return view('admin.kelola_user', compact('users'));
     }
 
     public function create()

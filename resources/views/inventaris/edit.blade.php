@@ -12,9 +12,9 @@
     </div><!-- End Page Title -->
 
     <div class="d-flex justify-content-end mb-3">
-        <a href="/inventaris">
+        <a href="{{ route('inventaris.list', $inventaris->id_kategori) }}">
             <button type="button" class="btn btn-primary my-2 btn-icon-text">
-                <i class="ri-arrow-go-back-fill"></i> Kembali
+                <i class="ri-arrow-go-back-line"></i> Kembali
             </button>
         </a>
     </div>
@@ -62,7 +62,6 @@
                                     <option value="Dipinjam" {{ $inventaris->status_barang == 'Dipinjam' ? 'selected' : '' }}>Dipinjam</option>
                                     <option value="Dalam Perbaikan" {{ $inventaris->status_barang == 'Dalam Perbaikan' ? 'selected' : '' }}>Dalam Perbaikan</option>
                                     <option value="Tidak Tersedia" {{ $inventaris->status_barang == 'Tidak Tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
-                                    <option value="Hilang" {{ $inventaris->status_barang == 'Hilang' ? 'selected' : '' }}>Hilang</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -71,7 +70,7 @@
                                     <option selected>Pilih...</option>
                                     <option value="Baik" {{ $inventaris->kondisi == 'Baik' ? 'selected' : '' }}>Baik</option>
                                     <option value="Rusak" {{ $inventaris->kondisi == 'Rusak' ? 'selected' : '' }}>Rusak</option>
-
+                                    <option value="Hilang" {{ $inventaris->kondisi == 'Hilang' ? 'selected' : '' }}>Hilang</option>
                                 </select>
                             </div>
 

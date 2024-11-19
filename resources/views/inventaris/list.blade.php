@@ -61,11 +61,11 @@
                                             @if ($item->status_barang == 'Tersedia')
                                             <span class="badge bg-success">Tersedia</span>
                                             @elseif ($item->status_barang == 'Dipinjam')
-                                            <span class="badge bg-info">Tidak Tersedia</span>
-                                            @elseif ($item->status_barang == 'Dalam Perbaikan')
-                                            <span class="badge bg-warning">Dalam Perbaikan</span>
+                                            <span class="badge bg-info">Dipinjam</span>
+                                            @elseif ($item->status_barang == 'Tidak Tersedia')
+                                            <span class="badge bg-danger">Tidak Tersedia</span>
                                             @else
-                                            <span class="badge bg-danger">
+                                            <span class="badge bg-warning">
                                                 {{ $item->status_barang }}
                                             </span>
                                             @endif
@@ -73,12 +73,10 @@
                                         <td>
                                             @if ($item->kondisi == 'Baik')
                                             <span class="badge bg-success">Baik</span>
-                                            @elseif ($item->kondisi == 'Rusak')
-                                            <span class="badge bg-danger">Rusak</span>
+                                            @elseif ($item->kondisi == 'Rusak' || $item->kondisi == 'Hilang')
+                                            <span class="badge bg-danger">{{ $item->kondisi }}</span>
                                             @else
-                                            <span class="badge bg-warning">
-                                                {{ $item->kondisi }}
-                                            </span>
+                                            <span class="badge bg-warning">{{ $item->kondisi }}</span>
                                             @endif
                                         </td>
                                         <td>
