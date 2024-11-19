@@ -31,7 +31,7 @@
                                 <td>Nama Peminjam</td>
                                 <td>:</td>
                                 <td>
-                                    {{ $peminjaman->name }}
+                                    {{ $users->name }}
                                 </td>
                             </tr>
                             <tr>
@@ -45,16 +45,16 @@
                                 <td>Tenggat Pengembalian</td>
                                 <td>:</td>
                                 <td>
-                                    {{ $peminjaman->tgl_kembali }}
+                                    {{ $peminjaman->tgl_tenggat }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Barang</td>
                                 <td>:</td>
                                 <td>
-                                    {{
-                                            $barang->nama_barang
-                                        }}
+                                    @foreach ($barang as $brg)
+                                        <li>{{ $brg->nama_barang }}</li>
+                                    @endforeach
                                 </td>
                             </tr>
                             <tr>

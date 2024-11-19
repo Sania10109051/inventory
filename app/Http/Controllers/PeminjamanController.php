@@ -23,10 +23,16 @@ class PeminjamanController extends Controller
     public function show($id)
     {
         $peminjaman = ModelPeminjaman::find($id);
-        $barang = Inventaris::where('id_barang', $peminjaman->id_barang)->first();
-        $peminjaman['name'] = User::where('id', $peminjaman->id_user)->first()->name;
+        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $id)->get();
+        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
+        $users = User::where('id', $peminjaman->id_user)->first();
 
-        return view('peminjaman.show', compact('peminjaman', 'barang'));
+        if (!$peminjaman) {
+            return redirect()->back()
+                ->with('error', 'Data peminjaman tidak ditemukan.');
+        }
+
+        return view('peminjaman.show', compact('peminjaman', 'barang', 'users'));
     }
 
     public function create()
@@ -41,24 +47,41 @@ class PeminjamanController extends Controller
     {
         $request->validate([
             'id_user' => 'required',
-            'id_barang' => 'required',
+            'id_barang' => 'required|array',
+            'id_barang.*' => 'required',
             'tgl_pinjam' => 'required',
+            'tgl_tenggat' => 'required',
+            'keterangan' => 'required',
         ], [
             'id_user.required' => 'ID User harus diisi.',
             'id_barang.required' => 'ID Barang harus diisi.',
+            'id_barang.*.required' => 'ID Barang harus diisi.',
             'tgl_pinjam.required' => 'Tanggal pinjam harus diisi.',
+            'tgl_tenggat.required' => 'Tanggal tenggat harus diisi.',
+            'keterangan.required' => 'Keterangan harus diisi.',
         ]);
 
+        $id_user = $request->id_user;
+        $tgl_pinjam = $request->tgl_pinjam;
+        $tgl_tenggat = $request->tgl_tenggat;
+        $id_barang_list = $request->id_barang;
+
         $data = [
-            'id_user' => $request->id_user,
-            'id_barang' => $request->id_barang,
-            'tgl_pinjam' => $request->tgl_pinjam,
+            'id_user' => $id_user,
+            'tgl_pinjam' => $tgl_pinjam,
+            'tgl_tenggat' => $tgl_tenggat,
             'status' => 'Dipinjam',
+            'keterangan' => $request->keterangan,
         ];
 
-        ModelPeminjaman::create($data);
+        $peminjaman = ModelPeminjaman::create($data);
 
-        $this->buktiPinjam($data['id_barang']);
+        foreach ($id_barang_list as $id_barang) {
+            DetailPeminjaman::create([
+                'id_peminjaman' => $peminjaman->id_peminjaman,
+                'id_barang' => $id_barang,
+            ]);
+        }
 
         return redirect()->route('peminjaman.index')
             ->with('success', 'Data peminjaman berhasil ditambahkan.');
@@ -75,9 +98,9 @@ class PeminjamanController extends Controller
     public function buktiPinjam($id)
     {
         $peminjaman = ModelPeminjaman::find($id);
-        // $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get();
-        // $barang = Inventaris::where('id_barang', $detailPeminjaman->id_barang)->first();
-        $barang = Inventaris::where('id_barang', $peminjaman->id_barang)->first();
+        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get();
+        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
+        // $barang = Inventaris::where('id_barang', $peminjaman->id_barang)->first();
         $nama_peminjam = User::where('id', $peminjaman->id_user)->first()->name;
 
 
@@ -85,8 +108,6 @@ class PeminjamanController extends Controller
             return redirect()->back()
                 ->with('error', 'Data peminjaman tidak ditemukan.');
         }
-
-        $barang = Inventaris::where('id_barang', $peminjaman->id_barang)->first();
 
         $qrCodePath = 'qrPeminjaman/' . $peminjaman->id_peminjaman . '.png';
         $fullPath = storage_path('app/public/' . $qrCodePath);
@@ -113,16 +134,33 @@ class PeminjamanController extends Controller
         // Tambahkan jarak setelah judul
         $section->addTextBreak(1);
 
-        // Tambahkan detail peminjam
-        $section->addText("Detail Peminjam:", ['name' => 'Arial', 'size' => 10, 'bold' => true]);
-        $section->addText("Nama : $nama_peminjam", ['name' => 'Arial', 'size' => 10]);
-
         // Tambahkan detail peminjaman
         $section->addText("Detail Peminjaman:", ['name' => 'Arial', 'size' => 10, 'bold' => true]);
-        $section->addText("Tanggal Pinjam : " . $peminjaman->tgl_pinjam, ['name' => 'Arial', 'size' => 10]);
-        $section->addText("Tanggal Kembali : " . $peminjaman->tgl_kembali, ['name' => 'Arial', 'size' => 10]);
-        $section->addText("Keperluan : " . $peminjaman->keterangan, ['name' => 'Arial', 'size' => 10]);
-        $section->addText("Status : " . $peminjaman->status, ['name' => 'Arial', 'size' => 10]);
+
+        $tableStyle = ['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 80];
+        $phpWord->addTableStyle('DetailPeminjamanTable', $tableStyle);
+
+        $table = $section->addTable('DetailPeminjamanTable');
+        $table->addRow();
+        $table->addCell(3000)->addText('Nama Peminjam', ['bold' => true]);
+        $table->addCell(6000)->addText($nama_peminjam);
+
+        $table = $section->addTable('DetailPeminjamanTable');
+        $table->addRow();
+        $table->addCell(3000)->addText('Tanggal Pinjam', ['bold' => true]);
+        $table->addCell(6000)->addText($peminjaman->tgl_pinjam);
+
+        $table->addRow();
+        $table->addCell(3000)->addText('Tanggal Kembali', ['bold' => true]);
+        $table->addCell(6000)->addText($peminjaman->tgl_tenggat);
+
+        $table->addRow();
+        $table->addCell(3000)->addText('Keperluan', ['bold' => true]);
+        $table->addCell(6000)->addText($peminjaman->keterangan);
+
+        $table->addRow();
+        $table->addCell(3000)->addText('Status', ['bold' => true]);
+        $table->addCell(6000)->addText($peminjaman->status);
 
         // Tambahkan tabel barang
         $section->addText("Detail Barang:", ['name' => 'Arial', 'size' => 10, 'bold' => true]);
@@ -135,18 +173,17 @@ class PeminjamanController extends Controller
         $table->addCell(6000)->addText('Nama Barang', ['bold' => true]);
         $table->addCell(3000)->addText('Keterangan', ['bold' => true]);
 
-        // foreach ($barang as $index => $item) {
-        //     $table->addRow();
-        //     $table->addCell(2000)->addText($index + 1);
-        //     $table->addCell(6000)->addText($item['id_barang']);
-        //     $table->addCell(6000)->addText($item['nama_barang']);
-        //     $table->addCell(3000)->addText($item['deskripsi_barang']);
-        // }
+        foreach ($barang as $item) {
+            $table->addRow();
+            $table->addCell(2000)->addText($item->id_barang);
+            $table->addCell(6000)->addText($item->nama_barang);
+            $table->addCell(3000)->addText($item->deskripsi_barang);
+        }
 
-        $table->addRow();
-        $table->addCell(2000)->addText($barang->id_barang);
-        $table->addCell(6000)->addText($barang->nama_barang);
-        $table->addCell(3000)->addText($barang->deskripsi_barang);
+        // $table->addRow();
+        // $table->addCell(2000)->addText($barang->id_barang);
+        // $table->addCell(6000)->addText($barang->nama_barang);
+        // $table->addCell(3000)->addText($barang->deskripsi_barang);
 
         // Tambahkan QR Code
         $section->addTextBreak(1);
@@ -181,7 +218,7 @@ class PeminjamanController extends Controller
 
         $table = $section->addTable();
         $table->addRow();
-        
+
         // Penanggung Jawab
         $cell1 = $table->addCell(6000);
         $cell1->addText("PJ Inventaris,", ['name' => 'Arial', 'size' => 10]);
@@ -216,31 +253,32 @@ class PeminjamanController extends Controller
     public function edit($id)
     {
         $peminjaman = ModelPeminjaman::find($id);
-        $barang = Inventaris::where('id', $peminjaman->id_barang)->first();
+        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get();
+        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
+        $users = User::where('id', $peminjaman->id_user)->first();
 
-        return view('peminjaman.edit', compact('peminjaman', 'barang'));
+        return view('peminjaman.edit', compact('peminjaman', 'barang', 'users'));
     }
 
     public function update(Request $request, $id)
     {
 
         $peminjaman = ModelPeminjaman::find($id);
+        if (!$peminjaman) {
+            return redirect()->back()
+                ->with('error', 'Data peminjaman tidak ditemukan.');
+        }
 
         $status = $request->status;
-
+        $kondisi = $request->kondisi;
         if ($status == 'Dikembalikan') {
-            $id_barang = $peminjaman->id_barang;
-            $barang = Inventaris::find($id_barang);
-            $barang->status = 1;
-            $dikembalikan = now();
+            $peminjaman->status = $status;
+            $peminjaman->tgl_kembali = date('Y-m-d');
+            $peminjaman->save();
 
-            $data = [
-                'status' => $status,
-                'tanggal_dikembalikan' => $dikembalikan,
-            ];
-
-            $peminjaman->update($data);
-
+            $barang = Inventaris::where('id_barang', $peminjaman->id_barang)->first();
+            $barang->status_barang = 'Tersedia';
+            $barang->kondisi = $kondisi;
 
             if (!$barang->save()) {
                 return redirect()->back()
@@ -251,7 +289,7 @@ class PeminjamanController extends Controller
                 ->with('success', 'Data peminjaman berhasil diubah.');
         } else {
             return redirect()->back()
-                ->with('error', 'Status peminjaman tidak valid');
+                ->with('error', 'Status peminjaman tidak valid.');
         }
     }
 

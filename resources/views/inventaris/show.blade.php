@@ -89,7 +89,7 @@
                         @if ($inventaris->qr_code)
                         <img src="{{ Storage::url('qrcodes/' . $inventaris->qr_code) }}" alt="QR Code" width="200px">
                         <br>
-                        <a href="{{ Storage::url('qrcodes/' . $inventaris->qr_code) }}" download="{{ $inventaris->nama_barang }}.png">
+                        <a href="{{ Storage::url('qrcodes/' . $inventaris->qr_code) }}" download="{{ $inventaris->id_barang . ' | ' . $inventaris->nama_barang }}.png">
                             <button class="btn btn-info mt-2 text-white">
                                 <i class="ri-download-2-fill"></i> Download QR Code
                             </button>

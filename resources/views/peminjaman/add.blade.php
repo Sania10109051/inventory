@@ -3,7 +3,6 @@
         Tambah Peminjaman
     </x-slot>
 
-
     <x-pagetittle>
         Tambahkan Peminjaman
     </x-pagetittle>
@@ -25,6 +24,15 @@
                     <div class="card-header bg-primary text-light">
                         <b>Tambah Peminjaman</b>
                     </div>
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     <div class="card-body mt-2">
                         <x-alert></x-alert>
                         <form method="post" action="{{ route('peminjaman.store') }}">
@@ -38,24 +46,43 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <label for="tgl_pinjam" class="form-label">Tanggal Pinjam</label>
+                                    <input type="date" name="tgl_pinjam" id="tgl_pinjam" class="form-control">
+                                </div>
+                                <div class="col">
+                                    <label for="tgl_kembali" class="form-label">Tenggat Pengembalian</label>
+                                    <input type="date" name="tgl_tenggat" id="tgl_kembali" class="form-control">
+                                </div>
+                            </div>
                             <div class="mb-3">
-                                <label for="tanggal_pinjam" class="form-label">Tanggal Pinjam</label>
-                                <input type="date" class="form-control" id="tanggal_pinjam" name="tgl_pinjam">
+                                <label for="keterangan" class="form-label">Keterangan</label>
+                                <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <label for="id_barang" class="form-label">Nama Barang</label>
-                                    <select name="id_barang" id="id_barang" class="form-select">
-                                        <option selected>Pilih...</option>
-                                        @foreach ($inventaris as $item)
-                                        <option value="{{ $item->id_barang }}">{{ $item->nama_barang }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col">
-                                    <div id="scannerBarang"></div>
+                            <div class="row" id="barang-container">
+                                <h4>List Barang Yang Akan Dipinjam</h4>
+                                <!-- Barang items will be added here dynamically -->
+                            </div>
+                            <!-- Modal -->
+                            <div class="modal fade" id="scanModal" tabindex="-1" aria-labelledby="scanModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="scanModalLabel">Scan Barang</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="scannerBarang"></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <button type="button" id="scan-barang" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#scanModal">Scan Barang</button>
+                            <br>
                             <button type="submit" class="btn btn-primary {{ $inventaris->count() == 0 ? 'disabled' : '' }}">Tambah</button>
                         </form>
                     </div>
@@ -64,6 +91,7 @@
         </div>
     </div>
     <script src="{{ asset('html5-qrcode/html5-qrcode.min.js') }}"></script>
+    <div id="data-inventaris" data-inventaris="{{ json_encode($inventaris) }}"></div>
     <script>
         // initialize html5QRCodeScanner
         let html5QRCodeScanner = new Html5QrcodeScanner(
@@ -75,14 +103,52 @@
                 },
             }
         );
+        const dataContainer = document.getElementById('data-inventaris');
+        const barangList = JSON.parse(dataContainer.dataset.inventaris);
+
+
+        function getBarangName(id) {
+            let barang = barangList.find(item => item.id_barang == id);
+            return barang ? barang.nama_barang : "Barang tidak ditemukan";
+        }
+
 
         function onScanSuccess(decodedText, decodedResult) {
-            // set the value of the hidden input field with the scanned text
-            document.getElementById('id_barang').value = decodedText;
+            let container = document.getElementById('barang-container');
+            let newItem = document.createElement('div');
+            newItem.classList.add('row', 'mb-3', 'barang-item');
+            newItem.innerHTML = `
+        <div class="col">
+            <!-- Input hidden untuk menyimpan id_barang -->
+            <input type="hidden" name="id_barang[]" value="${decodedText}">
+            <!-- Input text untuk menampilkan nama_barang -->
+            <input type="text" class="form-control" value="${getBarangName(decodedText)}" disabled>
+        </div>
+        <div class="col" id="button-section">
+            <button type="button" class="btn btn-danger remove-barang">Hapus</button>
+        </div>
+    `;
+            container.appendChild(newItem);
 
             // clear the scan area after performing the action above
             html5QRCodeScanner.clear();
+
+            // close the modal
+            let modal = bootstrap.Modal.getInstance(document.getElementById('scanModal'));
+            modal.hide();
         }
         html5QRCodeScanner.render(onScanSuccess);
+
+        document.getElementById('barang-container').addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-barang')) {
+                e.target.closest('.barang-item').remove();
+            }
+        });
+
+        document.getElementById('scan-barang').addEventListener('click', function() {
+            html5QRCodeScanner.clear();
+            html5QRCodeScanner.render(onScanSuccess);
+        });
     </script>
+
 </x-layout>

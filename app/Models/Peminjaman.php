@@ -11,9 +11,10 @@ class Peminjaman extends Model
     protected $primaryKey = 'id_peminjaman';
     protected $fillable = [
         'id_user',
-        'id_barang',
         'tgl_pinjam',
+        'tgl_tenggat',
         'tgl_kembali',
+        'keterangan',
         'status',
         'created_at',
         'updated_at'

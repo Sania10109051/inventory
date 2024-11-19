@@ -25,7 +25,15 @@
                         <b>Edit Peminjaman</b>
                     </div>
                     <div class="card-body mt-2">
-                        <x-alert></x-alert>
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <form method="POST" id="formEdit" action="{{ route('peminjaman.update', $peminjaman->id_peminjaman) }}">
                             @csrf
                             @method('POST')
@@ -34,7 +42,7 @@
                                     <td>Nama Peminjam</td>
                                     <td>:</td>
                                     <td>
-                                        {{ $peminjaman->name }}
+                                        {{ $users->name }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -45,19 +53,26 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td>Tenggat Pengembalian</td>
+                                    <td>:</td>
+                                    <td>
+                                        {{ $peminjaman->tgl_tenggat }}
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td>Tanggal Kembali</td>
                                     <td>:</td>
                                     <td>
-                                        {{ $peminjaman->tgl_kembali }}
+                                        {{ $peminjaman->tgl_kembali ?? 'Belum Dikembalikan' }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Barang</td>
                                     <td>:</td>
                                     <td>
-                                        {{
-                                            $barang->nama_barang
-                                        }}
+                                        @foreach ($barang as $brg)
+                                            <li>{{ $brg->nama_barang }}</li>
+                                        @endforeach
                                     </td>
                                 </tr>
                                 <tr>

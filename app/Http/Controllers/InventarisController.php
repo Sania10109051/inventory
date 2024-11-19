@@ -14,6 +14,7 @@ class InventarisController extends Controller
     public function index()
     {
         $kategori = KategoriBarang::all();
+        $inventaris = Inventaris::all();
 
         return view('inventaris.index', compact('inventaris', 'kategori'));
     }
@@ -119,8 +120,9 @@ class InventarisController extends Controller
                 'qr_code' => $fileQr,
             ]);
         }
-        return redirect()->route('inventaris.list')
-            ->with('success', 'Barang Inventaris Berhasil Ditambahkan Dengan QRCode.');
+
+        return redirect()->route('inventaris.list', $request->id_kategori)
+            ->with('success', 'Barang Inventaris Berhasil Ditambahkan.');
     }
 
     public function qrCreate($id)
