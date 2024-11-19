@@ -26,7 +26,7 @@
                     </div>
                     <div class="card-body mt-2">
                         <x-alert></x-alert>
-                        <form method="POST" id="formEdit" action="{{ route('peminjaman.update', $peminjaman->id) }}">
+                        <form method="POST" id="formEdit" action="{{ route('peminjaman.update', $peminjaman->id_peminjaman) }}">
                             @csrf
                             @method('POST')
                             <table class="table table-borderless">
@@ -34,21 +34,21 @@
                                     <td>Nama Peminjam</td>
                                     <td>:</td>
                                     <td>
-                                        {{ $peminjaman->nama_peminjam }}
+                                        {{ $peminjaman->name }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Tanggal Pinjam</td>
                                     <td>:</td>
                                     <td>
-                                        {{ $peminjaman->tanggal_pinjam }}
+                                        {{ $peminjaman->tgl_pinjam }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Tanggal Kembali</td>
                                     <td>:</td>
                                     <td>
-                                        {{ $peminjaman->tanggal_kembali }}
+                                        {{ $peminjaman->tgl_kembali }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -56,7 +56,7 @@
                                     <td>:</td>
                                     <td>
                                         {{
-                                            $barang->name
+                                            $barang->nama_barang
                                         }}
                                     </td>
                                 </tr>
@@ -69,6 +69,18 @@
                                             <option value="Dikembalikan" {{ $peminjaman->status == 'Dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
                                         </select>
                                     </td>
+                                </tr>
+                                <tr>
+                                    <td>Kondisi Barang</td>
+                                    <td>:</td>
+                                    <td>
+                                        <select class="form-select" name="kondisi">
+                                            <option value="Baik" {{ $peminjaman->kondisi == 'Baik' ? 'selected' : '' }}>Baik</option>
+                                            <option value="Rusak" {{ $peminjaman->kondisi == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                                            <option value="Hilang" {{ $peminjaman->kondisi == 'Hilang' ? 'selected' : '' }}>Hilang</option>
+                                        </select>
+                                    </td>
+                                </tr>
                                 </tr>
                             </table>
                             <button type="submit" class="btn btn-primary" onclick="return confirmSave()">Simpan</button>

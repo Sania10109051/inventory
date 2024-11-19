@@ -2,7 +2,7 @@
     <x-slot name="title">
         Tambah Peminjaman
     </x-slot>
-    
+
 
     <x-pagetittle>
         Tambahkan Peminjaman
@@ -31,12 +31,31 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Peminjam</label>
-                                <select name="peminjam_id" id="peminjam_id" class="form-select">
+                                <select name="id_user" id="peminjam_id" class="form-select">
                                     <option selected>Pilih...</option>
                                     @foreach ($users as $user)
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tanggal_pinjam" class="form-label">Tanggal Pinjam</label>
+                                <input type="date" class="form-control" id="tanggal_pinjam" name="tgl_pinjam">
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="id_barang" class="form-label">Nama Barang</label>
+                                    <select name="id_barang" id="id_barang" class="form-select">
+                                        <option selected>Pilih...</option>
+                                        @foreach ($inventaris as $item)
+                                        <option value="{{ $item->id_barang }}">{{ $item->nama_barang }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <div id="scannerBarang"></div>
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-primary {{ $inventaris->count() == 0 ? 'disabled' : '' }}">Tambah</button>
                         </form>
                     </div>
@@ -56,9 +75,9 @@
                 },
             }
         );
+
         function onScanSuccess(decodedText, decodedResult) {
             // set the value of the hidden input field with the scanned text
-            document.getElementById('barang_id').value = decodedText;
             document.getElementById('id_barang').value = decodedText;
 
             // clear the scan area after performing the action above

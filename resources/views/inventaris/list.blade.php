@@ -24,7 +24,7 @@
                         <x-alert></x-alert>
                         <!-- Default Table -->
                         <div class="table-responsive p-3">
-                            <table class="table table-data text-center table-hover">
+                            <table class="table table-data cell-border text-center hover">
                                 <thead>
                                     <tr>
                                         <th scope="col">Kode Barang</th>
@@ -32,6 +32,8 @@
                                         <th scope="col">Harga Barang</th>
                                         <th scope="col">Kategori Barang</th>
                                         <th scope="col">Tanggal Pembelian Barang</th>
+                                        <th scope="col">Status Barang</th>
+                                        <th scope="col">Kondisi Barang</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -55,6 +57,30 @@
                                             @endforeach
                                         </td>
                                         <td>{{ $item->tgl_pembelian }}</td>
+                                        <td>
+                                            @if ($item->status_barang == 'Tersedia')
+                                            <span class="badge bg-success">Tersedia</span>
+                                            @elseif ($item->status_barang == 'Dipinjam')
+                                            <span class="badge bg-info">Tidak Tersedia</span>
+                                            @elseif ($item->status_barang == 'Dalam Perbaikan')
+                                            <span class="badge bg-warning">Dalam Perbaikan</span>
+                                            @else
+                                            <span class="badge bg-danger">
+                                                {{ $item->status_barang }}
+                                            </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($item->kondisi == 'Baik')
+                                            <span class="badge bg-success">Baik</span>
+                                            @elseif ($item->kondisi == 'Rusak')
+                                            <span class="badge bg-danger">Rusak</span>
+                                            @else
+                                            <span class="badge bg-warning">
+                                                {{ $item->kondisi }}
+                                            </span>
+                                            @endif
+                                        </td>
                                         <td>
                                             <a href="{{ route('inventaris.show', $item->id_barang) }}">
                                                 <button type="button" class="btn btn-info btn-sm" title="Detail">

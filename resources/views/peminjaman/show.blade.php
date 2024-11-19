@@ -31,21 +31,21 @@
                                 <td>Nama Peminjam</td>
                                 <td>:</td>
                                 <td>
-                                    {{ $peminjaman->nama_peminjam }}
+                                    {{ $peminjaman->name }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Tanggal Pinjam</td>
                                 <td>:</td>
                                 <td>
-                                    {{ $peminjaman->tanggal_pinjam }}
+                                    {{ $peminjaman->tgl_pinjam }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Tenggat Pengembalian</td>
                                 <td>:</td>
                                 <td>
-                                    {{ $peminjaman->tanggal_kembali }}
+                                    {{ $peminjaman->tgl_kembali }}
                                 </td>
                             </tr>
                             <tr>
@@ -53,7 +53,7 @@
                                 <td>:</td>
                                 <td>
                                     {{
-                                            $barang->name
+                                            $barang->nama_barang
                                         }}
                                 </td>
                             </tr>
@@ -62,24 +62,24 @@
                                 <td>:</td>
                                 <td>
                                     @if ($peminjaman->status == 'Dipinjam')
-                                    <span class="badge bg-warning">Meminjam</span>
+                                    <span class="badge bg-warning">Dipinjam</span>
                                     @elseif ($peminjaman->status == 'Dikembalikan')
                                     <span class="badge bg-success">Dikembalikan</span>
                                     @endif
                                 </td>
                             </tr>
                             <tr>
-                                <td>Tanggal Dikembalikan</td>
+                                <td>Tanggal Kembali</td>
                                 <td>:</td>
                                 <td>
-                                    {{ $peminjaman->tanggal_dikembalikan ?? 'Belum Dikembalikan' }}
+                                    {{ $peminjaman->tgl_kembali ?? 'Belum Dikembalikan' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Surat Bukti Peminjaman</td>
                                 <td>:</td>
                                 <td>
-                                    <a href="{{route('peminjaman.buktiPinjam', $peminjaman->id)}}" target="_blank">
+                                    <a href="{{route('peminjaman.buktiPinjam', $peminjaman->id_peminjaman)}}" target="_blank">
                                         <button class="btn btn-sm btn-info text-light">
                                             <i class="ri-file-download-line"></i> Download Bukti Peminjaman
                                         </button>
@@ -88,7 +88,7 @@
                             </tr>
                         </table>
                         <div class="d-flex justify-content-end ">
-                            <a href="{{ route('peminjaman.edit', $peminjaman->id) }}">
+                            <a href="{{ route('peminjaman.edit', $peminjaman->id_peminjaman) }}">
                                 <button class="btn btn-warning">
                                     <i class="ri-pencil-line"></i> Edit
                                 </button>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Inventaris;
 
 class Peminjaman extends Model
 {
@@ -13,12 +14,12 @@ class Peminjaman extends Model
         'id_barang',
         'tgl_pinjam',
         'tgl_kembali',
-        'foto_barang',
         'status',
         'created_at',
         'updated_at'
     ];
     public $timestamps = true;
+    
 
     
 }

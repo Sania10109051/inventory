@@ -7,7 +7,7 @@
     <x-pagetittle>Detail Barang</x-pagetittle>
 
     <div class="d-flex justify-content-end mb-3">
-        <a href="/inventaris">
+        <a href="{{ route('inventaris.list' ,  $inventaris->id_kategori )}}">
             <button type="button" class="btn btn-primary my-2 btn-icon-text">
                 <i class="ri-arrow-go-back-fill"></i> Kembali
             </button>
@@ -36,10 +36,18 @@
                         <tr>
                             <th>Status Barang</th>
                             <td>
-                                @if ($inventaris->status_barang == 'Tersedia')
-                                <span class="badge bg-success">{{ $inventaris->status_barang }}</span>
+                                @if ($inventaris->kondisi == 'Rusak' || $inventaris->kondisi == 'Hilang')
+                                <span class="badge bg-danger">Tidak Tersedia</span>
                                 @else
-                                <span class="badge bg-danger">{{ $inventaris->status_barang }}</span>
+                                    @if ($inventaris->status_barang == 'Tersedia')
+                                        <span class="badge bg-success">{{ $inventaris->status_barang }}</span>
+                                    @elseif ($inventaris->status_barang == 'Dipinjam')
+                                        <span class="badge bg-info">{{ $inventaris->status_barang }}</span>
+                                    @elseif ($inventaris->status_barang == 'Dalam Perbaikan')
+                                        <span class="badge bg-warning">{{ $inventaris->status_barang }}</span>
+                                    @else
+                                        <span class="badge bg-danger">{{ $inventaris->status_barang }}</span>
+                                    @endif
                                 @endif
                             </td>
                         </tr>

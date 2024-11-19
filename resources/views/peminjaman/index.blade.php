@@ -48,9 +48,9 @@
                                             @csrf
                                             <input type="hidden" name="id_barang" id="id_barang">
                                             @if (session('id_barang'))
-                                                <div class="alert alert-success mt-3">
-                                                    Peminjaman ditemukan
-                                                </div>
+                                            <div class="alert alert-success mt-3">
+                                                Peminjaman ditemukan
+                                            </div>
                                             @endif
                                         </form>
                                     </div>
@@ -67,14 +67,13 @@
                 <div class="my-2 flex sm:flex-row flex-col">
                     <div class="block relative">
                         <div class="table-responsive">
-                            <table class="table text-center">
+                            <table class="table table-data text-center">
                                 <thead>
                                     <tr>
                                         <th scope="col">Kode Peminjaman</th>
                                         <th scope="col">Nama Peminjam</th>
                                         <th scope="col">Tanggal Pinjam</th>
                                         <th scope="col">Tenggat Pengembalian</th>
-                                        <th scope="col">Tanggal Dikembalikan</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Action</th>
                                     </tr>
@@ -82,26 +81,31 @@
                                 <tbody>
                                     @foreach ($peminjaman as $item)
                                     <tr>
-                                        <th scope="row">{{ $item->id }}</th>
-                                        <td>{{ $item->nama_peminjam }}</td>
-                                        <td>{{ $item->tanggal_pinjam }}</td>
-                                        <td>{{ $item->tanggal_kembali }}</td>
-                                        <td>{{ $item->tanggal_dikembalikan ?? '-' }}</td>
+                                        <th scope="row">{{ $item->id_peminjaman }}</th>
+                                        <td>
+                                            @foreach ($users as $user)
+                                            @if ($user->id == $item->id_user)
+                                            {{ $user->name }}
+                                            @endif
+                                            @endforeach
+                                        </td>
+                                        <td>{{ $item->tgl_pinjam }}</td>
+                                        <td>{{ $item->tgl_kembali ?? 'Belum Dikembalikan' }}</td>
                                         <td>
                                             @if ($item->status == 'Dipinjam')
-                                            <span class="badge bg-warning">Meminjam</span>
+                                            <span class="badge bg-warning">Dipinjam</span>
                                             @elseif ($item->status == 'Dikembalikan')
                                             <span class="badge bg-success">Dikembalikan</span>
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('peminjaman.show', $item->id) }}">
+                                            <a href="{{ route('peminjaman.show', $item->id_peminjaman) }}">
                                                 <button type="button" class="btn btn-info btn-sm" title="Detail">
                                                     <i class="ri-eye-fill"></i>
                                                 </button>
                                             </a>
                                             @if ($item->status == 'Dipinjam')
-                                            <a href="{{ route('peminjaman.edit', $item->id) }}">
+                                            <a href="{{ route('peminjaman.edit', $item->id_peminjaman) }}">
                                                 <button type="button" class="btn btn-warning btn-sm" title="Edit">
                                                     <i class="ri-pencil-line"></i>
                                                 </button>
@@ -118,7 +122,7 @@
             </div>
         </div>
     </section>
-    
+
     <script src="{{ asset('html5-qrcode/html5-qrcode.min.js') }}"></script>
     <script>
         // initialize html5QRCodeScanner

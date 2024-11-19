@@ -14,7 +14,6 @@ class InventarisController extends Controller
     public function index()
     {
         $kategori = KategoriBarang::all();
-        $inventaris = Inventaris::all();
 
         return view('inventaris.index', compact('inventaris', 'kategori'));
     }
@@ -180,9 +179,16 @@ class InventarisController extends Controller
             'deskripsi_barang.required' => 'Deskripsi barang harus diisi.',
         ]);
 
+        $kondisiBarang = $request->kondisi;
+        $statusBarang = $request->status_barang;
+
+        if ($kondisiBarang == 'Rusak') {
+            $statusBarang = 'Tidak Tersedia';
+        }
+
         $data = [
             'nama_barang' => $request->nama_barang,
-            'status_barang' => $request->status_barang,
+            'status_barang' => $statusBarang,
             'kondisi' => $request->kondisi,
             'harga_barang' => $request->harga_barang,
             'tgl_pembelian' => $request->tgl_pembelian,
@@ -212,7 +218,7 @@ class InventarisController extends Controller
 
         $inventaris->update($data);
 
-        return redirect()->route('inventaris.index')
+        return redirect()->route('inventaris.list', $request->id_kategori)
             ->with('success', 'Barang Inventaris Berhasil Diubah.');
     }
 
