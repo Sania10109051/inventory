@@ -36,30 +36,30 @@
                         <tr>
                             <th>Status Barang</th>
                             <td>
-                                @if ($inventaris->kondisi == 'Rusak' || $inventaris->kondisi == 'Hilang')
-                                <span class="badge bg-danger">Tidak Tersedia</span>
+                                @if ($inventaris->status_barang == 'Tersedia')
+                                <span class="badge bg-success">{{ $inventaris->status_barang }}</span>
+                                @elseif ($inventaris->status_barang == 'Dipinjam')
+                                <span class="badge bg-info">{{ $inventaris->status_barang }}</span>
+                                @elseif ($inventaris->status_barang == 'Dalam Perbaikan')
+                                <span class="badge bg-warning">{{ $inventaris->status_barang }}</span>
                                 @else
-                                    @if ($inventaris->status_barang == 'Tersedia')
-                                        <span class="badge bg-success">{{ $inventaris->status_barang }}</span>
-                                    @elseif ($inventaris->status_barang == 'Dipinjam')
-                                        <span class="badge bg-info">{{ $inventaris->status_barang }}</span>
-                                    @elseif ($inventaris->status_barang == 'Dalam Perbaikan')
-                                        <span class="badge bg-warning">{{ $inventaris->status_barang }}</span>
-                                    @else
-                                        <span class="badge bg-danger">{{ $inventaris->status_barang }}</span>
-                                    @endif
+                                <span class="badge bg-danger">{{ $inventaris->status_barang }}</span>
                                 @endif
                             </td>
                         </tr>
                         <tr>
                             <th>Kondisi</th>
                             <td>
-                                @if ($inventaris->kondisi == 'Baik')
-                                <span class="badge bg-success">{{ $inventaris->kondisi }}</span>
-                                @elseif ($inventaris->kondisi == 'Rusak' || $inventaris->kondisi == 'Hilang')
-                                <span class="badge bg-danger">{{ $inventaris->kondisi }}</span>
+                                @if ($inventaris->status_barang == 'Dalam Perbaikan')
+                                <span class="badge bg-danger">Rusak</span>
                                 @else
-                                <span class="badge bg-warning">{{ $inventaris->kondisi }}</span>
+                                    @if ($inventaris->kondisi == 'Baik')
+                                    <span class="badge bg-success">{{ $inventaris->kondisi }}</span>
+                                    @elseif ($inventaris->kondisi == 'Rusak' || $inventaris->kondisi == 'Hilang')
+                                    <span class="badge bg-danger">{{ $inventaris->kondisi }}</span>
+                                    @else
+                                    <span class="badge bg-warning">{{ $inventaris->kondisi }}</span>
+                                    @endif
                                 @endif
                             </td>
                         </tr>

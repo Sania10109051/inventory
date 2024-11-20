@@ -1,15 +1,16 @@
 <aside id="sidebar" class="sidebar">
-    <ul class="sidebar-nav" id="sidebar-nav">
 
+    <ul class="sidebar-nav" id="sidebar-nav">
+        @if(auth()->user()->role == 'admin')
         <li class="nav-item">
-            <a class="nav-link collapsed" href={{route('admin.dashboard')}}>
+            <a class="nav-link collapsed" href={{route('dashboard')}}>
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
         </li><!-- End Dashboard Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href={{route('admin.kelola_user')}}>
+            <a class="nav-link collapsed" href={{route('kelola_user.index')}}>
                 <i class="bi bi-people-fill"></i><span>User</span>
             </a>
         </li><!-- End Components Nav -->
@@ -56,11 +57,12 @@
                 </li>
             </ul>
         </li>
+        @endif
 
         <li class="nav-heading">Pages</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="users-profile.html">
+            <a class="nav-link collapsed" href="{{ route('user.profile') }}">
                 <i class="bi bi-person"></i>
                 <span>Profile</span>
             </a>

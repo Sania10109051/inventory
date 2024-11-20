@@ -89,11 +89,16 @@
                                     <td>Kondisi Barang</td>
                                     <td>:</td>
                                     <td>
-                                        <select class="form-select" name="kondisi">
-                                            <option value="Baik" {{ $peminjaman->kondisi == 'Baik' ? 'selected' : '' }}>Baik</option>
-                                            <option value="Rusak" {{ $peminjaman->kondisi == 'Rusak' ? 'selected' : '' }}>Rusak</option>
-                                            <option value="Hilang" {{ $peminjaman->kondisi == 'Hilang' ? 'selected' : '' }}>Hilang</option>
-                                        </select>
+                                        @foreach ($barang as $brg)
+                                            <div class="mb-2">
+                                                <label>{{ $brg->nama_barang }}</label>
+                                                <select class="form-select" name="kondisi[{{ $brg->id_barang }}]">
+                                                    <option value="Baik" {{ $brg->kondisi == 'Baik' ? 'selected' : '' }}>Baik</option>
+                                                    <option value="Rusak" {{ $brg->kondisi == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                                                    <option value="Hilang" {{ $brg->kondisi == 'Hilang' ? 'selected' : '' }}>Hilang</option>
+                                                </select>
+                                            </div>
+                                        @endforeach
                                     </td>
                                 </tr>
                                 </tr>

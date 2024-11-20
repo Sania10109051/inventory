@@ -109,33 +109,32 @@
 
         function getBarangName(id) {
             let barang = barangList.find(item => item.id_barang == id);
-            return barang ? barang.nama_barang : "Barang tidak ditemukan";
+            return barang ? barang.nama_barang : "Barang tidak ditemukan/Tidak Tersedia";
         }
 
 
         function onScanSuccess(decodedText, decodedResult) {
-            let container = document.getElementById('barang-container');
-            let newItem = document.createElement('div');
-            newItem.classList.add('row', 'mb-3', 'barang-item');
-            newItem.innerHTML = `
-        <div class="col">
-            <!-- Input hidden untuk menyimpan id_barang -->
-            <input type="hidden" name="id_barang[]" value="${decodedText}">
-            <!-- Input text untuk menampilkan nama_barang -->
-            <input type="text" class="form-control" value="${getBarangName(decodedText)}" disabled>
-        </div>
-        <div class="col" id="button-section">
-            <button type="button" class="btn btn-danger remove-barang">Hapus</button>
-        </div>
-    `;
-            container.appendChild(newItem);
+            if (barang = barangList.find(item => item.id_barang == decodedText)) {
+                let barangContainer = document.getElementById('barang-container');
+                let barangItem = document.createElement('div');
+                barangItem.classList.add('barang-item', 'mb-2');
+                barangItem.innerHTML = `
+                    <div class="d-flex justify-content-between">
+                        <span>${getBarangName(decodedText)}</span>
+                        <button type="button" class="btn btn-danger remove-barang">Hapus</button>
+                        <input type="hidden" name="id_barang[]" value="${decodedText}">
+                    </div>
+                `;
+                barangContainer.appendChild(barangItem);
+                // close the modal
+                let modal = bootstrap.Modal.getInstance(document.getElementById('scanModal'));
+                modal.hide();
+            } else {
+                alert('Barang tidak ditemukan/Tidak Tersedia');
+                html5QRCodeScanner.clear();
+                html5QRCodeScanner.render(onScanSuccess);
 
-            // clear the scan area after performing the action above
-            html5QRCodeScanner.clear();
-
-            // close the modal
-            let modal = bootstrap.Modal.getInstance(document.getElementById('scanModal'));
-            modal.hide();
+            }
         }
         html5QRCodeScanner.render(onScanSuccess);
 
