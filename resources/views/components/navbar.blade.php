@@ -60,7 +60,7 @@
 
         <li>
             <a class="nav-link collapsed {{ request()->is('user/riwayat_peminjaman') ? 'active' : '' }}" href="{{ route('user.riwayat_peminjaman') }}">
-                <i class="bi bi-circle"></i><span>Riwayat Peminjaman</span>
+                <i class="bi bi-clock-history"></i><span>Riwayat Peminjaman</span>
             </a>
         </li>
 

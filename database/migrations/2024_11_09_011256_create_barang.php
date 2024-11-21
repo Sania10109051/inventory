@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->text('qr_code')->nullable();
             $table->text('foto_barang')->nullable();
             $table->integer('harga_barang');
-            $table->integer('deskripsi_barang');
+            $table->text('deskripsi_barang');
             $table->date('tgl_pembelian');
             $table->foreignId('id_kategori')->constrained('kategori_barang', 'id_kategori');
             $table->timestamps();
