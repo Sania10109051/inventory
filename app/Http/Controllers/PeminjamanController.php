@@ -12,38 +12,38 @@ use App\Models\DetailPeminjaman;
 class PeminjamanController extends Controller
 {
 
-    public function index()
+    public function index() // Menampilkan data peminjaman
     {
-        $peminjaman = ModelPeminjaman::all();
-        $users = User::all();
+        $peminjaman = ModelPeminjaman::all(); // Mengambil semua data peminjaman
+        $users = User::all();   // Mengambil semua data user
 
-        return view('peminjaman.index', compact('peminjaman', 'users'));
+        return view('peminjaman.index', compact('peminjaman', 'users'));    // Menampilkan data peminjaman
     }
 
-    public function show($id)
+    public function show($id) // Menampilkan detail peminjaman
     {
-        $peminjaman = ModelPeminjaman::find($id);
-        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $id)->get();
-        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
-        $users = User::where('id', $peminjaman->id_user)->first();
+        $peminjaman = ModelPeminjaman::find($id); // Mengambil data peminjaman berdasarkan id
+        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $id)->get(); // Mengambil data detail peminjaman berdasarkan id peminjaman
+        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get(); // Mengambil data barang berdasarkan id barang
+        $users = User::where('id', $peminjaman->id_user)->first(); // Mengambil data user berdasarkan id user
 
-        if (!$peminjaman) {
+        if (!$peminjaman) { // Jika data peminjaman tidak ditemukan
             return redirect()->back()
                 ->with('error', 'Data peminjaman tidak ditemukan.');
         }
 
-        return view('peminjaman.show', compact('peminjaman', 'barang', 'users'));
+        return view('peminjaman.show', compact('peminjaman', 'barang', 'users')); // Menampilkan detail peminjaman
     }
 
-    public function create()
+    public function create() // Menampilkan form tambah peminjaman
     {
-        $inventaris = Inventaris::where('status_barang', 'Tersedia')->get();
-        $users = User::all();
+        $inventaris = Inventaris::where('status_barang', 'Tersedia')->get(); // Mengambil data inventaris yang status barangnya tersedia
+        $users = User::all(); // Mengambil semua data user
 
-        return view('peminjaman.add', compact('inventaris', 'users'));
+        return view('peminjaman.add', compact('inventaris', 'users')); // Menampilkan form tambah peminjaman
     }
 
-    public function store(Request $request)
+    public function store(Request $request) // Menyimpan data peminjaman
     {
         $request->validate([
             'id_user' => 'required',
@@ -59,79 +59,76 @@ class PeminjamanController extends Controller
             'tgl_pinjam.required' => 'Tanggal pinjam harus diisi.',
             'tgl_tenggat.required' => 'Tanggal tenggat harus diisi.',
             'keterangan.required' => 'Keterangan harus diisi.',
-        ]);
+        ]); // Validasi inputan
 
-        $id_user = $request->id_user;
-        $tgl_pinjam = $request->tgl_pinjam;
-        $tgl_tenggat = $request->tgl_tenggat;
-        $id_barang_list = $request->id_barang;
+        $id_user = $request->id_user; // Menambahkan data id_user dari form
+        $tgl_pinjam = $request->tgl_pinjam;  // Menambahkan data tgl_pinjam dari form
+        $tgl_tenggat = $request->tgl_tenggat;   // Menambahkan data tgl_tenggat dari form
+        $id_barang_list = $request->id_barang; // Menambahkan data id_barang dari form
 
         $data = [
-            'id_user' => $id_user,
-            'tgl_pinjam' => $tgl_pinjam,
-            'tgl_tenggat' => $tgl_tenggat,
-            'status' => 'Dipinjam',
-            'keterangan' => $request->keterangan,
+            'id_user' => $id_user, // Menambahkan data id_user dari form
+            'tgl_pinjam' => $tgl_pinjam, // Menambahkan data tgl_pinjam dari form
+            'tgl_tenggat' => $tgl_tenggat, // Menambahkan data tgl_tenggat dari form
+            'status' => 'Dipinjam', // Menambahkan data status dari form
+            'keterangan' => $request->keterangan, // Menambahkan data keterangan dari form
         ];
 
-        $peminjaman = ModelPeminjaman::create($data);
+        $peminjaman = ModelPeminjaman::create($data); // Menyimpan data peminjaman
 
-        foreach ($id_barang_list as $id_barang) {
-            DetailPeminjaman::create([
-                'id_peminjaman' => $peminjaman->id_peminjaman,
-                'id_barang' => $id_barang,
+        foreach ($id_barang_list as $id_barang) { // Looping data id_barang_list
+            DetailPeminjaman::create([ // Menyimpan data detail peminjaman
+                'id_peminjaman' => $peminjaman->id_peminjaman, // Menambahkan data id_peminjaman dari form
+                'id_barang' => $id_barang, // Menambahkan data id_barang dari form
             ]);
-            Inventaris::where('id_barang', $id_barang)->update([
-                'status_barang' => 'Dipinjam'
+            Inventaris::where('id_barang', $id_barang)->update([ // Mengupdate data inventaris
+                'status_barang' => 'Dipinjam' // Menambahkan data status_barang dari form
             ]);
         }
 
 
 
-        return redirect()->route('peminjaman.index')
-            ->with('success', 'Data peminjaman berhasil ditambahkan.');
+        return redirect()->route('peminjaman.index') 
+            ->with('success', 'Data peminjaman berhasil ditambahkan.'); // Redirect ke route peminjaman.index
     }
 
-    public function scanReturn(Request $request)
+    public function scanReturn(Request $request) // Scan QR Code untuk mencari data peminjaman
     {
-        $id_barang = $request->id_barang;
+        $id_barang = $request->id_barang; // Menambahkan data id_barang dari form hasil scan QR Code
 
-        return redirect()->route('peminjaman.show', $id_barang);
+        return redirect()->route('peminjaman.show', $id_barang); // Redirect ke route peminjaman.show
     }
 
 
-    public function buktiPinjam($id)
+    public function buktiPinjam($id) // Membuat bukti peminjaman 
     {
-        $peminjaman = ModelPeminjaman::find($id);
-        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get();
-        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
-        // $barang = Inventaris::where('id_barang', $peminjaman->id_barang)->first();
-        $nama_peminjam = User::where('id', $peminjaman->id_user)->first()->name;
+        $peminjaman = ModelPeminjaman::find($id); // Mengambil data peminjaman berdasarkan id
+        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get(); // Mengambil data detail peminjaman berdasarkan id peminjaman
+        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();   // Mengambil data barang berdasarkan id barang
+        $nama_peminjam = User::where('id', $peminjaman->id_user)->first()->name;    // Mengambil data user berdasarkan id user
 
 
-        if (!$peminjaman) {
+        if (!$peminjaman) { // Jika data peminjaman tidak ditem
             return redirect()->back()
                 ->with('error', 'Data peminjaman tidak ditemukan.');
         }
 
-        $qrCodePath = 'qrPeminjaman/' . $peminjaman->id_peminjaman . '.png';
-        $fullPath = storage_path('app/public/' . $qrCodePath);
+        $qrCodePath = 'qrPeminjaman/' . $peminjaman->id_peminjaman . '.png'; // Menambahkan path qrCode
+        $fullPath = storage_path('app/public/' . $qrCodePath); // Menambahkan fullPath
 
-        if (!file_exists(dirname($fullPath))) {
-            mkdir(dirname($fullPath), 0755, true);
+        if (!file_exists(dirname($fullPath))) { // Jika folder tidak ada
+            mkdir(dirname($fullPath), 0755, true); // Membuat folder
         }
 
-        QrCode::format('png')->size(200)->generate($peminjaman->id_peminjaman, $fullPath);
+        QrCode::format('png')->size(200)->generate($peminjaman->id_peminjaman, $fullPath); // Membuat QR Code dengan format png
 
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();  // Menambahkan library PhpWord
 
-
-        $phpWord = new \PhpOffice\PhpWord\PhpWord();
-
-        $section = $phpWord->addSection();
+        $section = $phpWord->addSection(); // Menambahkan section
 
         // Tambahkan judul dokumen
-        $section->addText(
-            'INVOICE PEMINJAMAN BARANG INVENTARIS',
+        $section->addText( // Menambahkan text
+            'INVOICE PEMINJAMAN BARANG INVENTARIS', 
             ['name' => 'Arial', 'size' => 16, 'bold' => true],
             ['align' => 'center']
         );
@@ -255,50 +252,47 @@ class PeminjamanController extends Controller
 
 
 
-    public function edit($id)
+    public function edit($id) // Menampilkan form edit peminjaman
     {
-        $peminjaman = ModelPeminjaman::find($id);
-        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get();
-        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
-        $users = User::where('id', $peminjaman->id_user)->first();
+        $peminjaman = ModelPeminjaman::find($id); // Mengambil data peminjaman berdasarkan id
+        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get();    // Mengambil data detail peminjaman berdasarkan id peminjaman
+        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();   // Mengambil data barang berdasarkan id barang
+        $users = User::where('id', $peminjaman->id_user)->first();  // Mengambil data user berdasarkan id user
 
-        return view('peminjaman.edit', compact('peminjaman', 'barang', 'users'));
+        return view('peminjaman.edit', compact('peminjaman', 'barang', 'users'));   // Menampilkan form edit peminjaman
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id)   // Mengubah data peminjaman
     {
-
-        $peminjaman = ModelPeminjaman::find($id);
-        if (!$peminjaman) {
+        $peminjaman = ModelPeminjaman::find($id);   // Mengambil data peminjaman berdasarkan id
+        if (!$peminjaman) { // Jika data peminjaman tidak ditem
             return redirect()->back()
                 ->with('error', 'Data peminjaman tidak ditemukan.');
         }
 
-        $status = $request->status;
-        if ($status == 'Dikembalikan') {
-            $peminjaman->status = $status;
-            $peminjaman->tgl_kembali = date('Y-m-d');
-            $peminjaman->save();
+        $status = $request->status; // Menambahkan data status dari form
+        if ($status == 'Dikembalikan') {    // Jika status peminjaman dikembalikan
+            $peminjaman->status = $status;  // Menambahkan data status dari form
+            $peminjaman->tgl_kembali = date('Y-m-d');   // Menambahkan data tgl_kembali dari form
+            $peminjaman->save();    // Menyimpan data peminjaman
 
-            $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get();
-            $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
+            $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $peminjaman->id_peminjaman)->get();   // Mengambil data detail peminjaman berdasarkan id peminjaman
+            $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();   // Mengambil data barang berdasarkan id barang
 
-            $kondisi_barang = $request->kondisi;
-
-            // multiple kondisi barang from request
-            foreach ($barang as $brg) {
-                if (isset($kondisi_barang[$brg->id_barang])) {
-                    $brg->kondisi = $kondisi_barang[$brg->id_barang];
-                    if ($brg->kondisi == 'Rusak' || $brg->kondisi == 'Hilang') {
-                        $brg->status_barang = 'Tidak Tersedia';
+            $kondisi_barang = $request->kondisi;    // Menambahkan data kondisi dari form
+            foreach ($barang as $brg) { // Looping data barang
+                if (isset($kondisi_barang[$brg->id_barang])) {  // Jika kondisi barang ada
+                    $brg->kondisi = $kondisi_barang[$brg->id_barang];   // Menambahkan data kondisi dari form
+                    if ($brg->kondisi == 'Rusak' || $brg->kondisi == 'Hilang') {   // Jika kondisi barang rusak atau hilang
+                        $brg->status_barang = 'Tidak Tersedia'; // Menambahkan data status_barang dari form
                     } else {
-                        $brg->status_barang = 'Tersedia';
+                        $brg->status_barang = 'Tersedia'; 
                     }
                     $brg->save();
                 }
             }
 
-            foreach ($barang as $brg) {
+            foreach ($barang as $brg) { // Looping data barang
                 if (!$brg->save()) {
                     return redirect()->back()
                         ->with('error', 'Data peminjaman gagal diubah.');
@@ -312,10 +306,10 @@ class PeminjamanController extends Controller
         }
     }
 
-    public function logPeminjaman()
+    public function logPeminjaman() // Menampilkan log peminjaman user
     {
-        $status = 'Dipinjam';
-        $peminjaman = ModelPeminjaman::where('status', $status)->get();
+        $status = 'Dipinjam';  // Menambahkan data status dari form
+        $peminjaman = ModelPeminjaman::where('status', $status)->get(); // Mengambil data peminjaman berdasarkan status
 
         return view('peminjaman.index', compact('peminjaman'));
     }

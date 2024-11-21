@@ -11,19 +11,19 @@ use App\Models\Inventaris;
 
 class UsersController extends Controller
 {
-    public function index()
+    public function index() // Menampilkan data user
     {
         return view('user.index');
     }
 
-    public function show()
-    {
+    public function show()  // Menampilkan profile user
+    { 
         $profile = User::find(Auth::user()->id);
 
         return view('user.profile', compact('profile'));
     }
 
-    public function updateProfile(Request $request)
+    public function updateProfile(Request $request) // Mengubah data profile user
     {
         $request->validate([
             'name' => 'required',
@@ -39,28 +39,28 @@ class UsersController extends Controller
             'foto.image' => 'File yang diupload harus berupa gambar.',
             'department.required' => 'Departemen harus diisi.',
             'phone.required' => 'Nomor telepon harus diisi.',
-        ]);
+        ]); // Validasi inputan
 
-        $user = User::find(Auth::user()->id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->department = $request->department;
-        $user->phone = $request->phone;
+        $user = User::find(Auth::user()->id);   // Mengambil data user berdasarkan id
+        $user->name = $request->name;   // Menambahkan data nama dari form
+        $user->email = $request->email; // Menambahkan data email dari form
+        $user->department = $request->department;   // Menambahkan data department dari form
+        $user->phone = $request->phone; // Menambahkan data phone dari form
 
-        if ($request->hasFile('foto')) {
-            $foto = $request->file('foto');
-            $foto->move('profileImages', $foto->getClientOriginalName());
-            $user->profile_image = $foto->getClientOriginalName();
+        if ($request->hasFile('foto')) {    // Jika ada file foto
+            $foto = $request->file('foto');     // Menambahkan data foto dari form
+            $foto->move('profileImages', $foto->getClientOriginalName());   // Pindahkan foto ke folder profileImages
+            $user->profile_image = $foto->getClientOriginalName();  // Menambahkan data profile_image dari form
         }
 
-        $user->save();
+        $user->save();  // Menyimpan data user
 
-        return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui.');      
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(Request $request)    // Mengubah password user
     {
-        $request->validate([
+        $request->validate([    
             'old_password' => 'required',
             'password' => 'required|min:8|confirmed',
         ]
@@ -69,32 +69,32 @@ class UsersController extends Controller
             'password.required' => 'Password baru harus diisi.',
             'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.'
-        ]);
+        ]); // Validasi inputan
 
-        $user = User::find(Auth::user()->id);
+        $user = User::find(Auth::user()->id);   // Mengambil data user berdasarkan id
 
-        if (password_verify($request->old_password, $user->password)) {
-            $user->password = bcrypt($request->password);
-            $user->save();
+        if (password_verify($request->old_password, $user->password)) {   // Jika password lama sesuai
+            $user->password = bcrypt($request->password);   // Mengubah password user
+            $user->save();  // Menyimpan data user
 
-            return redirect()->back()->with('success', 'Password berhasil diperbarui.');
+            return redirect()->back()->with('success', 'Password berhasil diperbarui.');    
         }
 
-        return redirect()->back()->with('error', 'Password lama salah.');
+        return redirect()->back()->with('error', 'Password lama salah.');   
     }
 
-    public function riwayatPeminjaman()
+    public function riwayatPeminjaman()   // Menampilkan riwayat peminjaman user
     {
-        $peminjaman = Peminjaman::where('id_user', Auth::user()->id)->get();
+        $peminjaman = Peminjaman::where('id_user', Auth::user()->id)->get();    // Mengambil data peminjaman berdasarkan id user
 
-        return view('user.riwayatPeminjaman', compact('peminjaman'));
+        return view('user.riwayatPeminjaman', compact('peminjaman'));       
     }
 
-    public function detailPeminjaman($id)
-    {
-        $peminjaman = Peminjaman::find($id);
-        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $id)->get();
-        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
+    public function detailPeminjaman($id)   // Menampilkan detail peminjaman user
+    {   
+        $peminjaman = Peminjaman::find($id);    // Mengambil data peminjaman berdasarkan id
+        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $id)->get();   // Mengambil data detail peminjaman berdasarkan id peminjaman
+        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();   // Mengambil data barang berdasarkan id barang
         $users = User::where('id', $peminjaman->id_user)->get()->first();
 
         if (!$peminjaman) {

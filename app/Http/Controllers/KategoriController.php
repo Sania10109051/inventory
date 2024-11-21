@@ -7,46 +7,46 @@ use App\Models\KategoriBarang;
 
 class KategoriController extends Controller
 {
-    public function index()
+    public function index() // Menampilkan data kategori 
     {
-        $kategori = KategoriBarang::all();
-        return view('kategori.index', compact('kategori'));
+        $kategori = KategoriBarang::all(); // Mengambil semua data kategori
+        return view('kategori.index', compact('kategori')); // Menampilkan data kategori
     }
 
-    public function create()
+    public function create() // Menampilkan form tambah kategori
     {
-        return view('kategori.create');
+        return view('kategori.create'); // Menampilkan form tambah kategori
     }
 
-    public function store(Request $request)
+    public function store(Request $request) // Menyimpan data kategori
     {
-        $request->validate([
+        $request->validate([ // Validasi inputan
             'nama_kategori' => 'required'
         ]);
-
-        KategoriBarang::create($request->all());
+ 
+        KategoriBarang::create($request->all()); // Menyimpan data kategori
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan');
     }
 
-    public function edit($id)
+    public function edit($id) // Menampilkan form edit kategori
     {
-        $kategori = KategoriBarang::find($id);
-        return view('kategori.edit', compact('kategori'));
-    }
+        $kategori = KategoriBarang::find($id); // Mengambil data kategori berdasarkan id
+        return view('kategori.edit', compact('kategori')); // Menampilkan form edit kategori
+    } 
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id) // Mengubah data kategori
     {
-        $request->validate([
+        $request->validate([ // Validasi inputan
             'nama_kategori' => 'required'
-        ]);
+        ]); 
 
-        KategoriBarang::find($id)->update($request->all());
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diubah');
+        KategoriBarang::find($id)->update($request->all()); // Mengubah data kategori
+        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diubah'); 
     }
 
-    public function destroy($id)
+    public function destroy($id) // Menghapus data kategori
     {
-        KategoriBarang::find($id)->delete();
+        KategoriBarang::find($id)->delete(); // Menghapus data kategori
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus');
     }
 }
