@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer('harga_barang');
             $table->integer('deskripsi_barang');
             $table->date('tgl_pembelian');
-            $table->foreignId('id_kategori');
+            $table->foreignId('id_kategori')->constrained('kategori', 'id_kategori');
             $table->timestamps();
         });
     }
