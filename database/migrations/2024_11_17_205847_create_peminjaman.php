@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->foreignId('id_barang');
             $table->date('tgl_pinjam');
             $table->date('tgl_kembali')->nullable();
+            $table->date('tgl_tenggat');
             $table->text('keterangan')->nullable();
             $table->string('status');
             $table->timestamps();
