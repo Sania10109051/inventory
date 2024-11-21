@@ -10,7 +10,6 @@ return new class extends Migration {
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->id('id_peminjaman');
             $table->foreignId('id_user');
-            $table->foreignId('id_barang');
             $table->date('tgl_pinjam');
             $table->date('tgl_kembali')->nullable();
             $table->date('tgl_tenggat');

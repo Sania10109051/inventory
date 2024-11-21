@@ -75,6 +75,9 @@ Route::prefix('user')->name('user.')->middleware(['auth', 'verified',])->group(f
     Route::post('/profile/update', [UsersController::class, 'updateProfile'])->name('profile.update');
     Route::delete('/profile/delete', [UsersController::class, 'destroy'])->name('profile.destroy');
     Route::post(('profile/change-password'), [UsersController::class, 'changePassword'])->name('profile.change-password');
+    Route::get('/riwayat_peminjaman', [UsersController::class, 'riwayatPeminjaman'])->name('riwayat_peminjaman');
+    Route::get('/riwayat_peminjaman/{id}', [UsersController::class, 'detailPeminjaman'])->name('detail_peminjaman');
+    Route::get('/buktiPinjam/{id}', [PeminjamanController::class, 'buktiPinjam'])->name('buktiPinjam');
 });
 
 Route::middleware('auth')->group(function () {

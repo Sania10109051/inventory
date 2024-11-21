@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Peminjaman;
+use App\Models\detailPeminjaman;
+use App\Models\Inventaris;
 
 class UsersController extends Controller
 {
@@ -78,5 +81,27 @@ class UsersController extends Controller
         }
 
         return redirect()->back()->with('error', 'Password lama salah.');
+    }
+
+    public function riwayatPeminjaman()
+    {
+        $peminjaman = Peminjaman::where('id_user', Auth::user()->id)->get();
+
+        return view('user.riwayatPeminjaman', compact('peminjaman'));
+    }
+
+    public function detailPeminjaman($id)
+    {
+        $peminjaman = Peminjaman::find($id);
+        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $id)->get();
+        $barang = Inventaris::whereIn('id_barang', $detailPeminjaman->pluck('id_barang'))->get();
+        $users = User::where('id', $peminjaman->id_user)->get()->first();
+
+        if (!$peminjaman) {
+            return redirect()->back()
+                ->with('error', 'Data peminjaman tidak ditemukan.');
+        }
+
+        return view('user.detailPeminjaman', compact('peminjaman', 'detailPeminjaman', 'barang', 'users'));
     }
 }

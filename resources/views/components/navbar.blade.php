@@ -45,16 +45,6 @@
                         <i class="bi bi-circle"></i><span>Data Peminjaman</span>
                     </a>
                 </li>
-                <li>
-                    <a class="nav-link collapsed {{ request()->is('peminjaman/riwayat_pinjam') ? 'active' : '' }}" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                        <i class="bi bi-circle"></i><span>Riwayat Peminjaman</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link collapsed {{ request()->is('peminjaman/riwayat_pengembalian') ? 'active' : '' }}" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
-                        <i class="bi bi-circle"></i><span>Riwayat Pengembalian</span>
-                    </a>
-                </li>
             </ul>
         </li>
         @endif
@@ -67,6 +57,18 @@
                 <span>Profile</span>
             </a>
         </li><!-- End Profile Page Nav -->
+
+        <li>
+            <a class="nav-link collapsed {{ request()->is('user/riwayat_peminjaman') ? 'active' : '' }}" href="{{ route('user.riwayat_peminjaman') }}">
+                <i class="bi bi-circle"></i><span>Riwayat Peminjaman</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="nav-link collapsed {{ request()->is('user/riwayat_pengembalian') ? 'active' : '' }}" href="">
+                <i class="bi bi-circle"></i><span>Riwayat Pengembalian</span>
+            </a>
+        </li>
 
         <li class="nav-item">
             <a class="nav-link collapsed" href="pages-faq.html">
