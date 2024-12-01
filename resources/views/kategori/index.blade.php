@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-end mb-3">
             <a href="{{ route('kategori.add') }}">
                 <button type="button" class="btn btn-primary my-2 btn-icon-text">
-                    <i class="ri-add-line"></i> Tambah Kategori
+                    <i class="ri-add-line"></i> Tambah
                 </button>
             </a>
         </div>

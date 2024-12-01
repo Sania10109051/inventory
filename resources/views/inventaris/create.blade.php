@@ -57,12 +57,13 @@
                     </div>
                         
                     <div class="d-flex justify-content-start">
-                        <!-- Tombol Simpan dengan Ikon Save -->
-                        <button type="submit" class="btn btn-primary my-2 btn-icon-text" onclick="confirmModal()">
-                            <i class="ri-save-2-line"></i> Simpan
-                        </button>
+                        <a href="{{ route('inventaris.create') }}">
+                            <button type="button" class="btn btn-primary my-2 btn-icon-text">
+                                <i class="ri-add-fill"></i> Tambah
+                            </button>
+                        </a>
                     
-                        <!-- Tombol Kembali dengan jarak antara tombol Simpan dan Kembali -->
+                       
                         <a href="/inventaris">
                             <button type="button" class="btn btn-secondary my-2 btn-icon-text ms-2">
                                 <i class="ri-arrow-go-back-fill"></i> Kembali

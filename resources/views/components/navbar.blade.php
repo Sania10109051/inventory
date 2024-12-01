@@ -29,20 +29,21 @@
                 </li>
                 <li>
                     <a href="{{route('kategori.index')}}" class="{{request()->is('kategori') ? 'active' : ''}}">
-                        <i class="bi bi-circle"></i><span>Kelola Kategori Barang</span>
+                        <i class="bi bi-circle"></i><span>Kategori Barang</span>
                     </a>
                 </li>
             </ul>
         </li><!-- End Tables Nav -->
 
         <li class="nav-item">
-            <a class="nav-link " data-bs-target="#tables-nav2" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-book"></i><span>Peminjaman</span><i class="bi bi-chevron-down ms-auto"></i>
+            <a class="nav-link" data-bs-target="#tables-nav2" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-arrow-left-right"></i><span>Transaksi</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
+        </li>        
             <ul id="tables-nav2" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                 <li>
                     <a class="nav-link collapsed {{ request()->is('peminjaman') ? 'active' : '' }}" href={{route('peminjaman.index')}}>
-                        <i class="bi bi-circle"></i><span>Data Peminjaman</span>
+                        <i class="bi bi-circle"></i><span>Peminjaman</span>
                     </a>
                 </li>
             </ul>
