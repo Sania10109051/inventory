@@ -8,13 +8,22 @@
         Barang Inventaris
     </x-pagetittle>
 
-    <div class="d-flex justify-content-end mb-3">
+    <div class="d-flex justify-content-end gap-2 mb-3">
+        <!-- Tombol Tambah -->
         <a href="{{ route('inventaris.create') }}">
             <button type="button" class="btn btn-primary my-2 btn-icon-text">
                 <i class="ri-add-fill"></i> Tambah
             </button>
         </a>
+    
+        <!-- Tombol Kembali -->
+        <a href="/inventaris">
+            <button type="button" class="btn btn-secondary my-2 btn-icon-text">
+                <i class="ri-arrow-go-back-fill"></i> Kembali
+            </button>
+        </a>
     </div>
+    
 
     <section class="section">
         <div class="row justify-content-center">

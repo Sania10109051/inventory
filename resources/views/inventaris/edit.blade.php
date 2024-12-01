@@ -3,9 +3,9 @@
         Edit Barang Inventaris
     </x-slot>
 
-    <x-pagetittle>
+    {{-- <x-pagetittle>
         Edit Barang Inventaris
-    </x-pagetittle>
+    </x-pagetittle> --}}
 
     <div class="pagetitle" style="display: flex; justify-content: center; align-items: center;">
         <h1 style="font-size: 2.5rem;">Edit Barang Inventaris</h1>

@@ -6,12 +6,7 @@
     <x-pagetittle>Tambah Barang</x-pagetittle>
 
     <x-section>
-        <div class="d-flex justify-content-end mb-3">
-            <a href="/inventaris">
-                <button type="button" class="btn btn-primary my-2 btn-icon-text">
-                    <i class="ri-arrow-go-back-fill"></i> Kembali
-                </button>
-            </a>
+       
         </div>
         <div class="m-4">
             <x-alert></x-alert>
@@ -61,9 +56,21 @@
                         <textarea class="form-control" id="deskripsi" name="deskripsi_barang" rows="3"></textarea>
                     </div>
                         
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary" onclick="confirmModal()" >Tambah</button>
+                    <div class="d-flex justify-content-start">
+                        <!-- Tombol Simpan dengan Ikon Save -->
+                        <button type="submit" class="btn btn-primary my-2 btn-icon-text" onclick="confirmModal()">
+                            <i class="ri-save-2-line"></i> Simpan
+                        </button>
+                    
+                        <!-- Tombol Kembali dengan jarak antara tombol Simpan dan Kembali -->
+                        <a href="/inventaris">
+                            <button type="button" class="btn btn-secondary my-2 btn-icon-text ms-2">
+                                <i class="ri-arrow-go-back-fill"></i> Kembali
+                            </button>
+                        </a>
                     </div>
+                    
+                                                          
                 </form><!-- End Multi Columns Form -->
             </div>
         </div>

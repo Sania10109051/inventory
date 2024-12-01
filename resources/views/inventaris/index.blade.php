@@ -5,16 +5,16 @@
 
 
     <x-pagetittle>
-        Barang Inventaris
+       Data Barang
     </x-pagetittle>
 
-    <div class="d-flex justify-content-end mb-3">
+    {{-- <div class="d-flex justify-content-end mb-3">
         <a href="{{ route('inventaris.create') }}">
             <button type="button" class="btn btn-primary my-2 btn-icon-text">
                 <i class="ri-add-fill"></i> Tambah
             </button>
         </a>
-    </div>
+    </div> --}}
 
     <section class="section">
         <div class="row justify-content-center">
@@ -23,7 +23,7 @@
                     <div class="card-body">
                         <x-alert></x-alert>
                         <div class="row p-4">
-                            <h3 class="row justify-content-center p-2" >Kategori Barang</h3>
+                            {{-- <h3 class="row justify-content-center p-2" >Kategori Barang</h3> --}}
                             @foreach ($kategori as $list)
                             <div class="col-md-4">
                                 <div class="card">
