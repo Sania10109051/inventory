@@ -17,7 +17,7 @@
 
         <li class="nav-item">
             <a class="nav-link " data-bs-target="#tables-nav1" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-box"></i><span>Inventaris</span><i class="bi bi-chevron-down ms-auto"></i>
+                <i class="bi bi-box"></i><span>Data</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="tables-nav1" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                 <li>
