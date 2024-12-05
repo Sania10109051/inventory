@@ -56,7 +56,7 @@
                         <textarea class="form-control" id="deskripsi" name="deskripsi_barang" rows="3"></textarea>
                     </div>
                         
-                    <div class="d-flex justify-content-start">
+                    {{-- <div class="d-flex justify-content-start">
                         <a href="{{ route('inventaris.create') }}">
                             <button type="button" class="btn btn-primary my-2 btn-icon-text">
                                 <i class="ri-add-fill"></i> Tambah
@@ -69,8 +69,18 @@
                                 <i class="ri-arrow-go-back-fill"></i> Kembali
                             </button>
                         </a>
-                    </div>
+                    </div> --}}
+                    <div class="d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary my-2 btn-icon-text">
+                            <i class="ri-add-fill"></i> Tambah
+                        </button>
                     
+                        <a href="/inventaris">
+                            <button type="button" class="btn btn-secondary my-2 btn-icon-text ms-2">
+                                <i class="ri-arrow-go-back-fill"></i> Kembali
+                            </button>
+                        </a>
+                    </div>                    
                                                           
                 </form><!-- End Multi Columns Form -->
             </div>
