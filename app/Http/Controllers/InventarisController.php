@@ -27,6 +27,20 @@ class InventarisController extends Controller
         return view('inventaris.list', compact('inventaris', 'kategori')); // Menampilkan halaman list inventaris
     }
 
+    public function scanQR(Request $request)
+    {
+        $id_barang = $request->id_barang; // Mengambil id barang dari form
+
+        $inventaris = Inventaris::where('id_barang', $id_barang)->first(); // Mengambil data inventaris berdasarkan id barang
+
+        if (!$inventaris) { // Jika data inventaris tidak ditemukan
+            return redirect()->route('inventaris.list')
+                ->with('error', 'Barang Inventaris Tidak Ditemukan.');
+        }
+
+        return redirect()->route('inventaris.show', $inventaris->id_barang); // Redirect ke halaman detail inventaris
+    }
+
     public function show($id)
     {
         $inventaris = Inventaris::find($id); // Mengambil data inventaris berdasarkan id
@@ -68,7 +82,6 @@ class InventarisController extends Controller
             return redirect()->back()
                 ->with('error', 'Gambar barang gagal diupload.');
         }
-
         $namaGambar = basename($gambar);
 
         $data = [
@@ -231,7 +244,7 @@ class InventarisController extends Controller
             ->with('success', 'Barang Inventaris Berhasil Diubah.');
     }
 
-    public function destroy($id) // Fungsi untuk menghapus data barang
+    public function destroy(Request $request, $id) // Fungsi untuk menghapus data barang
     {
         $inventaris = Inventaris::find($id);  // Mengambil data inventaris berdasarkan id
 
@@ -247,10 +260,11 @@ class InventarisController extends Controller
                 unlink($path); // Menghapus gambar
             }
         }
+        $kategori = $request->id_kategori; // Mengambil id kategori barang
 
         $inventaris->delete(); // Menghapus data inventaris dari database
 
-        return redirect()->route('inventaris.list') // Redirect ke halaman list barang
+        return redirect()->route('inventaris.list', $kategori) // Redirect ke halaman list barang
             ->with('success', 'Barang Inventaris Berhasil Dihapus.');
     }
 
